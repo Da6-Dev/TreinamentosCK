@@ -3,11 +3,18 @@ import { Routes, Route, NavLink, useParams, Navigate } from 'react-router-dom';
 
 // --- Ícones em SVG que usaremos na interface ---
 const PlayIcon = () => (
-  <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <svg className="w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
 );
 const CheckCircleIcon = () => (
-  <svg className="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+  <svg className="w-6 h-6 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
 );
+const MenuIcon = () => (
+  <svg className="w-6 h-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+);
+const CloseIcon = () => (
+  <svg className="w-6 h-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+);
+
 
 // --- Dados dos vídeos ---
 const videoData = {
@@ -63,27 +70,24 @@ const videoData = {
   ],
 };
 const categories = Object.keys(videoData);
-// Função para criar um nome amigável para a URL (ex: "Sistema CK" -> "sistema-ck")
 const slugify = (text) => text.toLowerCase().replace(/\s+/g, '-');
 
 
 // COMPONENTE PARA A PÁGINA DE UMA CATEGORIA
 function CategoryPage({ watchedVideos, handleVideoClick }) {
-  const { categorySlug } = useParams(); // Pega o nome da categoria da URL
-  
-  // Encontra o nome real da categoria a partir do slug da URL
+  const { categorySlug } = useParams();
   const categoryName = categories.find(cat => slugify(cat) === categorySlug);
 
   if (!categoryName) {
-    return <div className="p-10 text-xl text-center">Categoria não encontrada.</div>;
+    return <div className="p-6 md:p-10 text-xl text-center">Categoria não encontrada.</div>;
   }
 
   const videos = videoData[categoryName];
 
   return (
-    <main className="flex-1 p-10">
-      <header className="mb-10">
-        <h2 className="text-4xl font-bold text-slate-800">{categoryName}</h2>
+    <div className="flex-1 p-6 md:p-10">
+      <header className="mb-8 md:mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-800">{categoryName}</h2>
         <p className="text-slate-500 mt-1">Selecione um vídeo para começar seu treinamento.</p>
       </header>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -95,8 +99,8 @@ function CategoryPage({ watchedVideos, handleVideoClick }) {
               onClick={() => handleVideoClick(video.url)}
               className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden"
             >
-              <div className="p-6 flex items-center justify-between">
-                <span className={`font-semibold ${isWatched ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
+              <div className="p-5 flex items-center justify-between gap-4">
+                <span className={`font-semibold text-left ${isWatched ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
                   {video.title}
                 </span>
                 {isWatched ? <CheckCircleIcon /> : <PlayIcon />}
@@ -105,7 +109,37 @@ function CategoryPage({ watchedVideos, handleVideoClick }) {
           );
         })}
       </div>
-    </main>
+    </div>
+  );
+}
+
+// COMPONENTE SIDEBAR (REUTILIZÁVEL)
+function Sidebar({ onLinkClick }) {
+  return (
+    <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col shrink-0">
+      <div className="flex items-center justify-between mb-10">
+        <h1 className="text-2xl font-bold text-[#ffc700]">Código Kid</h1>
+        {/* O botão de fechar será renderizado pelo App component para controlar o estado */}
+      </div>
+      <nav>
+        <ul className="space-y-2">
+          {categories.map(category => (
+            <li key={category}>
+              <NavLink
+                to={`/${slugify(category)}`}
+                onClick={onLinkClick} // Fecha o menu ao clicar em um link no modo mobile
+                className={({ isActive }) => `w-full text-left px-4 py-2 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center ${isActive
+                    ? 'bg-[#ffc700] text-slate-900 shadow-md'
+                    : 'text-slate-600 hover:bg-yellow-50'
+                  }`}
+              >
+                {category}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
   );
 }
 
@@ -113,8 +147,8 @@ function CategoryPage({ watchedVideos, handleVideoClick }) {
 // COMPONENTE PRINCIPAL DA APLICAÇÃO
 function App() {
   const [watchedVideos, setWatchedVideos] = useState(new Set());
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Lógica para carregar e salvar vídeos assistidos do localStorage
   useEffect(() => {
     const savedWatched = localStorage.getItem('watchedVideos');
     if (savedWatched) {
@@ -127,43 +161,55 @@ function App() {
   }, [watchedVideos]);
 
   const handleVideoClick = (url) => {
-    setWatchedVideos(prevWatched => new Set(prevWatched).add(url));
+    setWatchedVideos(prevWatched => {
+      const newWatched = new Set(prevWatched);
+      newWatched.add(url);
+      return newWatched;
+    });
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  return (
-    <div className="flex min-h-screen bg-slate-100 font-sans">
-      {/* --- Barra Lateral (Sidebar) com Links de Navegação --- */}
-      <aside className="w-64 bg-white border-r border-slate-200 p-6 flex-shrink-0">
-        <h1 className="text-2xl font-bold text-[#ffc700] mb-10">Código Kid</h1>
-        <nav>
-          <ul className="space-y-2">
-            {categories.map(category => (
-              <li key={category}>
-                <NavLink
-                  to={`/${slugify(category)}`} // O link agora é uma rota
-                  className={({ isActive }) => `w-full text-left px-4 py-2 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center ${
-                      isActive
-                        ? 'bg-[#ffc700] text-slate-900 shadow-md'
-                        : 'text-slate-600 hover:bg-yellow-50'
-                  }`}
-                >
-                  {category}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+  // Função para fechar a sidebar, útil para o overlay e links
+  const closeSidebar = () => setSidebarOpen(false);
 
-      {/* --- Área onde o conteúdo da rota será renderizado --- */}
-      <Routes>
-          <Route path="/" element={<Navigate to={`/${slugify(categories[0])}`} replace />} />
-          <Route 
-            path="/:categorySlug" 
-            element={<CategoryPage watchedVideos={watchedVideos} handleVideoClick={handleVideoClick} />}
-          />
-      </Routes>
+  return (
+    <div className="min-h-screen bg-slate-100 font-sans">
+      <div className="flex">
+        {/* --- Overlay para fechar o menu no mobile --- */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+            onClick={closeSidebar}
+          ></div>
+        )}
+
+        {/* --- Barra Lateral (Sidebar) com lógica de responsividade --- */}
+        <div className={`fixed inset-y-0 left-0 z-30 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:relative md:translate-x-0`}>
+          <Sidebar onLinkClick={closeSidebar} />
+        </div>
+
+        {/* --- Área de Conteúdo Principal --- */}
+        <div className="flex flex-col flex-1 w-full">
+          {/* --- Cabeçalho para Mobile --- */}
+          <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-10">
+            <h1 className="text-xl font-bold text-[#ffc700]">Código Kid</h1>
+            <button onClick={() => setSidebarOpen(true)}>
+              <MenuIcon />
+            </button>
+          </header>
+
+          {/* --- Roteamento e renderização da página da categoria --- */}
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Navigate to={`/${slugify(categories[0])}`} replace />} />
+              <Route
+                path="/:categorySlug"
+                element={<CategoryPage watchedVideos={watchedVideos} handleVideoClick={handleVideoClick} />}
+              />
+            </Routes>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }
