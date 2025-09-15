@@ -1,3 +1,4 @@
 {
-  
+  "pt": "Um portal de treinamento interno para a equipe da Código Kid, construído com React e Vite. A aplicação centraliza vídeos, permite o acompanhamento de progresso e salva os dados no navegador usando localStorage.",
+  "en": "An internal training portal for the Código Kid team, built with React and Vite. The application centralizes videos, allows progress tracking, and saves data in the browser using localStorage."
 }
